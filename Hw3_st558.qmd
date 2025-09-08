@@ -1,0 +1,94 @@
+---
+title: "HW3"
+format: html
+editor: visual
+---
+
+## Task 1 - Control Flow Practice
+
+
+
+1. Load the data and add status colums to each of the data frames in the bp_list
+
+```{r}
+load("hw2_list (1).rda")
+
+bp_list[["treatment"]]$status <- character(20) 
+bp_list[["placebo"]]$status <- character(10)
+
+```
+
+2. Use the constraints given in the question to fill in the status columns in the treatment data frame by using a for loop with if/else.
+
+```{r}
+for (i in 1:nrow(bp_list$treatment)) {
+  if (bp_list$treatment$post_bp[i] <= 120) {
+  bp_list$treatment$status[i] <- "optimal"
+  }else if (bp_list$treatment$post_bp[i] <= 130) {
+  bp_list$treatment$status[i] <- "borderline"
+  }else {
+  bp_list$treatment$status <- "too high"
+  }
+}
+```
+
+3. Now do the same for the placebo data frame 
+
+
+
+```{r}
+for (i in 1:nrow(bp_list$placebo)) {
+  if (bp_list$placebo$post_bp[i]<= 120) {
+  bp_list$placebo$status[i] <- "optimal"
+  } else if (bp_list$placebo$post_bp[i] <= 130) {
+  bp_list$placebo$status[i] <- "borderline"
+  } else {
+  bp_list$placebo$status <- "too high"
+  }
+
+}
+
+
+```
+
+
+## Task 2 - Function Writing
+
+1. Writing a function that takes in a list with 2 data frames and takes in an R function being set to "mean". Use the get(stat) funtion within the function to get the function from the quoted string. create a vector with the actual names and add the statistic name to the vector. 
+```{r}
+bp_statistics <- function (df_list , stat = "mean") {
+  my_fun <- get(stat)
+  stat_interest <- c( 
+    treatment_pre = my_fun (df_list$treatment$pre_bp),
+    treatment_post = my_fun (df_list$treatmen$post_bp),
+    treatment_diff = my_fun(df_list$treatment$diff_bp),
+    placebo_pre = my_fun(df_list$placebo$pre_bp),
+    placebo_post = my_fun(df_list$placebo$post_bp),
+    placebo_diff = my_fun(df_list$placebo$diff_bp)
+  )
+  names(stat_interest) <- paste0(names(stat_interest), "_", stat)
+  return(stat_interest)
+  
+}
+  
+
+  
+```
+2. Applying my function with and without specifying the statistic of insterest
+```{r}
+bp_statistics(bp_list)
+```
+```{r}
+bp_statistics(bp_list,"sd")
+```
+
+```{r}
+bp_statistics(bp_list,"var")
+bp_statistics(bp_list,"min")
+bp_statistics(bp_list,"max")
+```
+
+
+
+
+
